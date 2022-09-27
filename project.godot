@@ -1,0 +1,144 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=4
+
+_global_script_classes=[ {
+"base": "KinematicBody2D",
+"class": "Ball",
+"language": "GDScript",
+"path": "res://game_objects/ball.gd"
+}, {
+"base": "Area2D",
+"class": "BallSpawner",
+"language": "GDScript",
+"path": "res://game_objects/ball_spawner.gd"
+}, {
+"base": "Node2D",
+"class": "Brick",
+"language": "GDScript",
+"path": "res://game_objects/brick.gd"
+}, {
+"base": "Node2D",
+"class": "BrickGenerator",
+"language": "GDScript",
+"path": "res://game_objects/brick_generator.gd"
+}, {
+"base": "TileMap",
+"class": "BrickMapGrid",
+"language": "GDScript",
+"path": "res://game_objects/brick_map_grid.gd"
+}, {
+"base": "Area2D",
+"class": "DeadZone",
+"language": "GDScript",
+"path": "res://game_objects/dead_zone.gd"
+}, {
+"base": "Node2D",
+"class": "GameInputHandler",
+"language": "GDScript",
+"path": "res://game_objects/game_input_handler.gd"
+}, {
+"base": "CenterContainer",
+"class": "GameOverPrompt",
+"language": "GDScript",
+"path": "res://game_objects/game_over_prompt.gd"
+}, {
+"base": "Reference",
+"class": "GutHookScript",
+"language": "GDScript",
+"path": "res://addons/gut/hook_script.gd"
+}, {
+"base": "Node",
+"class": "GutTest",
+"language": "GDScript",
+"path": "res://addons/gut/test.gd"
+}, {
+"base": "KinematicBody2D",
+"class": "Paddle",
+"language": "GDScript",
+"path": "res://game_objects/paddle.gd"
+}, {
+"base": "StaticBody2D",
+"class": "Wall",
+"language": "GDScript",
+"path": "res://game_objects/wall.gd"
+} ]
+_global_script_class_icons={
+"Ball": "",
+"BallSpawner": "",
+"Brick": "",
+"BrickGenerator": "",
+"BrickMapGrid": "",
+"DeadZone": "",
+"GameInputHandler": "",
+"GameOverPrompt": "",
+"GutHookScript": "",
+"GutTest": "",
+"Paddle": "",
+"Wall": ""
+}
+
+[application]
+
+config/name="Breakout"
+run/main_scene="res://game_objects/Game.tscn"
+config/icon="res://assets/icon.png"
+
+[display]
+
+window/stretch/mode="2d"
+window/stretch/aspect="keep_width"
+
+[editor_plugins]
+
+enabled=PoolStringArray( "res://addons/Todo_Manager/plugin.cfg", "res://addons/gut/plugin.cfg" )
+
+[gui]
+
+common/drop_mouse_on_gui_input_disabled=true
+
+[input]
+
+move_paddle_left={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":0,"physical_scancode":65,"unicode":0,"echo":false,"script":null)
+, Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":0,"physical_scancode":16777231,"unicode":0,"echo":false,"script":null)
+ ]
+}
+move_paddle_right={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":0,"physical_scancode":68,"unicode":0,"echo":false,"script":null)
+, Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":0,"physical_scancode":16777233,"unicode":0,"echo":false,"script":null)
+ ]
+}
+launch_ball={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":0,"physical_scancode":32,"unicode":0,"echo":false,"script":null)
+, Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"button_mask":0,"position":Vector2( 0, 0 ),"global_position":Vector2( 0, 0 ),"factor":1.0,"button_index":1,"pressed":false,"doubleclick":false,"script":null)
+ ]
+}
+
+[layer_names]
+
+2d_physics/layer_1="Ball"
+2d_physics/layer_2="Walls"
+2d_physics/layer_3="Paddle"
+2d_physics/layer_4="Bricks"
+2d_physics/layer_5="DeadZone"
+
+[physics]
+
+common/enable_pause_aware_picking=true
+
+[rendering]
+
+quality/driver/driver_name="GLES2"
+vram_compression/import_etc=true
+vram_compression/import_etc2=false
+environment/default_clear_color=Color( 0.247059, 0.262745, 0.364706, 1 )
