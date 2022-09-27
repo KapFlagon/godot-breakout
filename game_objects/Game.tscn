@@ -1,0 +1,103 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://game_objects/DeadZone.tscn" type="PackedScene" id=1]
+[ext_resource path="res://game_objects/game.gd" type="Script" id=2]
+[ext_resource path="res://game_objects/HorizontalWall.tscn" type="PackedScene" id=3]
+[ext_resource path="res://game_objects/VerticalWall.tscn" type="PackedScene" id=4]
+[ext_resource path="res://game_objects/BrickMapGrid.tscn" type="PackedScene" id=5]
+[ext_resource path="res://game_objects/BallSpawner.tscn" type="PackedScene" id=6]
+[ext_resource path="res://game_objects/Paddle.tscn" type="PackedScene" id=7]
+[ext_resource path="res://game_objects/GameOverPrompt.tscn" type="PackedScene" id=8]
+
+[node name="Game" type="Node2D"]
+script = ExtResource( 2 )
+
+[node name="VerticalWallLeft" parent="." instance=ExtResource( 4 )]
+position = Vector2( 0, 304 )
+
+[node name="VerticalWallRight" parent="." instance=ExtResource( 4 )]
+position = Vector2( 1024, 304 )
+
+[node name="HorizontalWallTop" parent="." instance=ExtResource( 3 )]
+position = Vector2( 512, 0 )
+
+[node name="HorizontalWallBottom" parent="." instance=ExtResource( 3 )]
+position = Vector2( 512, 597 )
+
+[node name="DeadZone" parent="." instance=ExtResource( 1 )]
+position = Vector2( 512, 509 )
+
+[node name="BrickMapGrid" parent="." instance=ExtResource( 5 )]
+unique_name_in_owner = true
+position = Vector2( 32, 20 )
+
+[node name="BallSpawner" parent="." instance=ExtResource( 6 )]
+unique_name_in_owner = true
+position = Vector2( 512, 331 )
+
+[node name="Paddle" parent="." instance=ExtResource( 7 )]
+unique_name_in_owner = true
+position = Vector2( 512, 450 )
+
+[node name="PlayerInfo" type="HBoxContainer" parent="."]
+margin_left = 64.0
+margin_top = 522.0
+margin_right = 960.0
+margin_bottom = 575.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/separation = 20
+alignment = 1
+
+[node name="LivesHBoxContainer" type="HBoxContainer" parent="PlayerInfo"]
+margin_left = 380.0
+margin_right = 429.0
+margin_bottom = 53.0
+
+[node name="LivesLbl" type="Label" parent="PlayerInfo/LivesHBoxContainer"]
+margin_top = 19.0
+margin_right = 37.0
+margin_bottom = 33.0
+text = "Lives:"
+
+[node name="LivesValLbl" type="Label" parent="PlayerInfo/LivesHBoxContainer"]
+unique_name_in_owner = true
+margin_left = 41.0
+margin_top = 19.0
+margin_right = 49.0
+margin_bottom = 33.0
+text = "3"
+
+[node name="ScoreHBoxContainer" type="HBoxContainer" parent="PlayerInfo"]
+margin_left = 449.0
+margin_right = 516.0
+margin_bottom = 53.0
+
+[node name="ScoreLbl" type="Label" parent="PlayerInfo/ScoreHBoxContainer"]
+margin_top = 19.0
+margin_right = 39.0
+margin_bottom = 33.0
+text = "Score:"
+
+[node name="ScoreValLbl" type="Label" parent="PlayerInfo/ScoreHBoxContainer"]
+unique_name_in_owner = true
+margin_left = 43.0
+margin_top = 19.0
+margin_right = 67.0
+margin_bottom = 33.0
+text = "000"
+
+[node name="GameOverPrompt" parent="." instance=ExtResource( 8 )]
+unique_name_in_owner = true
+visible = false
+
+[connection signal="ball_is_dead" from="DeadZone" to="." method="_on_DeadZone_ball_is_dead"]
+[connection signal="all_bricks_cleared" from="BrickMapGrid" to="." method="_on_BrickMapGrid_all_bricks_cleared"]
+[connection signal="all_bricks_reset" from="BrickMapGrid" to="." method="_on_BrickMapGrid_all_bricks_reset"]
+[connection signal="first_orange_brick_hit" from="BrickMapGrid" to="." method="_on_BrickMapGrid_first_orange_brick_hit"]
+[connection signal="first_red_brick_hit" from="BrickMapGrid" to="." method="_on_BrickMapGrid_first_red_brick_hit"]
+[connection signal="player_scored" from="BrickMapGrid" to="." method="_on_BrickMapGrid_player_scored"]
+[connection signal="ball_spawned" from="BallSpawner" to="." method="_on_BallSpawner_ball_spawned"]
+[connection signal="play_again_clicked" from="GameOverPrompt" to="." method="_on_GameOverPrompt_play_again_clicked"]
