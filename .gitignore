@@ -12,3 +12,7 @@ data_*/
 
 # addon specific assets and extras
 .addons_extras/
+
+# GUT specific files
+.gut_editor_config.json
+.gut_editor_shortcuts.cfg
