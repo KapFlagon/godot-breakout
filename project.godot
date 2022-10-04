@@ -64,6 +64,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://game_objects/paddle.gd"
 }, {
+"base": "Camera2D",
+"class": "ShakeableCamera",
+"language": "GDScript",
+"path": "res://game_objects/shakeable_camera.gd"
+}, {
 "base": "StaticBody2D",
 "class": "Wall",
 "language": "GDScript",
@@ -81,6 +86,7 @@ _global_script_class_icons={
 "GutHookScript": "",
 "GutTest": "",
 "Paddle": "",
+"ShakeableCamera": "",
 "Wall": ""
 }
 
@@ -126,11 +132,11 @@ launch_ball={
 
 [layer_names]
 
-2d_physics/layer_1="Ball"
-2d_physics/layer_2="Walls"
-2d_physics/layer_3="Paddle"
-2d_physics/layer_4="Bricks"
-2d_physics/layer_5="DeadZone"
+2d_physics/layer_1="ball"
+2d_physics/layer_2="walls"
+2d_physics/layer_3="paddle"
+2d_physics/layer_4="bricks"
+2d_physics/layer_5="dead_zone"
 
 [physics]
 
