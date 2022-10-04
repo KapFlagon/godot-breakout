@@ -11,6 +11,7 @@ var _score_value: int = 1 setget set_score_value, get_score_value
 var _rectangle: Rect2
 
 onready var _detector_shape_extents = $"%DetectorShape".shape.extents
+onready var _collision_particles: CPUParticles2D = $"%CollisionParticles"
 
 
 
@@ -18,6 +19,7 @@ onready var _detector_shape_extents = $"%DetectorShape".shape.extents
 func _ready():
 	_rectangle = Rect2(_detector_shape_extents.x *-1, _detector_shape_extents.y * -1, 
 			_detector_shape_extents.x * 2, _detector_shape_extents.y * 2)
+	_collision_particles.set_color(_base_colour)
 
 
 func _draw():
@@ -62,8 +64,24 @@ func set_score_value(new_score_value: int) -> void:
 func _disable_brick_after_hit() -> void:
 	self.set_brick_hit(true)
 	$"%StaticBodyCollisionShape".set_deferred("disabled", true)
-	self.hide()
+	_collision_particles.set_emitting(true)
+	_base_colour = _build_opaque_colour()
+	update()
 	emit_signal("brick_was_hit", _score_value)
+
+
+func _build_opaque_colour() -> Color:
+	var _base_colour_r = _base_colour.r 
+	var _base_colour_g = _base_colour.g 
+	var _base_colour_b = _base_colour.b
+	return Color(_base_colour_r, _base_colour_g, _base_colour_b, 0)
+
+
+func _build_solid_colour() -> Color:
+	var _base_colour_r = _base_colour.r 
+	var _base_colour_g = _base_colour.g 
+	var _base_colour_b = _base_colour.b
+	return Color(_base_colour_r, _base_colour_g, _base_colour_b, 1)
 
 
 # Public functions
@@ -71,7 +89,8 @@ func reset_brick() -> void:
 	self.set_position(_starting_position)
 	self.set_brick_hit(false)
 	$"%StaticBodyCollisionShape".set_deferred("disabled", false)
-	self.show()
+	_base_colour = _build_solid_colour()
+	update()
 
 
 # Connected signals
