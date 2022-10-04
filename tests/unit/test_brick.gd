@@ -59,3 +59,17 @@ func test_position_is_same_as_starting_position() -> void:
 	_brick_instance.set_starting_position(test_start_position)
 	assert_eq(_brick_instance.get_position(), test_start_position)
 	assert_eq(_brick_instance.get_starting_position(), test_start_position)
+
+
+func test_brick_can_build_opaque_base_colour() -> void:
+	var colour: Color = _brick_instance._build_opaque_colour()
+	assert_eq(colour.a, 0)
+
+
+func test_brick_can_build_solid_base_colour() -> void:
+	var colour: Color = _brick_instance._build_solid_colour()
+	assert_eq(colour.a, 1)
+
+
+# TODO write tests for particle emission on ball hit.
+# TODO write tests for sound effect playback on ball hit.

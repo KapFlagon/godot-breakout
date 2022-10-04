@@ -107,3 +107,7 @@ func test_paddle_moves_right_by_one_increment() -> void:
 	simulate(_paddle_instance, 100, 0.01)
 	assert_almost_eq(_paddle_instance.get_position().x, target_position, 0.5)
 	remove_child(_paddle_instance)
+
+
+# TODO write tests for particle emission on ball hit.
+# TODO write tests for sound effect playback on ball hit.
