@@ -64,7 +64,7 @@ func test_brick_changes_to_hit_status_after_bounce() -> void:
 	brick_and_ball_setup()
 	yield(yield_for(0.4), YIELD)
 	assert_eq(_brick_instance.is_brick_hit(), true)
-	assert_eq(_brick_instance.is_visible(), false)
+	assert_eq(_brick_instance.get_base_colour().a, 0)
 	assert_eq(_brick_instance.is_collision_disabled(), true)
 
 
@@ -84,7 +84,7 @@ func test_brick_can_be_reset_after_hit() -> void:
 	_brick_instance.set_position(Vector2(10, 10))
 	assert_signal_emitted(_brick_instance, "brick_was_hit")
 	assert_eq(_brick_instance.is_brick_hit(), true)
-	assert_eq(_brick_instance.is_visible(), false)
+	assert_eq(_brick_instance.get_base_colour().a, 0)
 	assert_eq(_brick_instance.is_collision_disabled(), true)
 	assert_eq(_brick_instance.get_position(), Vector2(10, 10))
 	assert_ne(_brick_instance.get_position(), Vector2(200, 240))
@@ -93,7 +93,7 @@ func test_brick_can_be_reset_after_hit() -> void:
 	_brick_instance.reset_brick()
 	yield(yield_for(0.4), YIELD)
 	assert_eq(_brick_instance.is_brick_hit(), false)
-	assert_eq(_brick_instance.is_visible(), true)
+	assert_eq(_brick_instance.get_base_colour().a, 1)
 	assert_eq(_brick_instance.is_collision_disabled(), false)
 	assert_ne(_brick_instance.get_position(), Vector2(10, 10))
 	assert_eq(_brick_instance.get_position(), Vector2(200, 240))
