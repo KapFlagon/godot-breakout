@@ -12,6 +12,7 @@ var _rectangle: Rect2
 var _x_direction: float = 0.0
 
 onready var _collision_shape_extents = $"%CollisionShape2D".shape.extents
+onready var _particles = $"%CPUParticles2D"
 
 
 # Virtual functions
@@ -19,6 +20,7 @@ func _ready() -> void:
 	self.set_position(self.get_position())
 	_rectangle = Rect2(_collision_shape_extents.x *-1, _collision_shape_extents.y * -1, 
 			_collision_shape_extents.x * 2, _collision_shape_extents.y * 2)
+	_particles.set_color(_base_colour)
 
 
 func _draw() -> void:
@@ -29,13 +31,13 @@ func _physics_process(delta) -> void:
 	var x_diff = _target_x_position  - position.x
 	var stepified_x_diff = stepify(x_diff, 1)
 	_establish_direction(stepified_x_diff)
-	
+
+	var velocity := Vector2.ZERO
 	if _x_direction != 0:
-		var velocity = Vector2(stepified_x_diff, 0) * delta * _speed
-		var _collision = move_and_collide(velocity)
+		velocity = Vector2(stepified_x_diff, 0) * delta * _speed
 	else:
-		var velocity = Vector2(0, 0)
-		var _collision = move_and_collide(velocity)
+		velocity = Vector2(0, 0)
+	var _collision: KinematicCollision2D = move_and_collide(velocity)
 
 
 # Getters and Setters
@@ -85,6 +87,11 @@ func move_right() -> void:
 		_target_x_position = position.x + _movement_increment
 	else:
 		_target_x_position += _movement_increment * _speed 
+
+
+func emit_particles_at_position(position: Vector2) -> void:
+	_particles.set_position(to_local(position))
+	_particles.set_emitting(true)
 
 
 # Private functions
