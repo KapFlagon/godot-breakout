@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://game_objects/DeadZone.tscn" type="PackedScene" id=1]
 [ext_resource path="res://game_objects/game.gd" type="Script" id=2]
@@ -8,6 +8,7 @@
 [ext_resource path="res://game_objects/BallSpawner.tscn" type="PackedScene" id=6]
 [ext_resource path="res://game_objects/Paddle.tscn" type="PackedScene" id=7]
 [ext_resource path="res://game_objects/GameOverPrompt.tscn" type="PackedScene" id=8]
+[ext_resource path="res://game_objects/shakeable_camera.gd" type="Script" id=9]
 
 [node name="Game" type="Node2D"]
 script = ExtResource( 2 )
@@ -35,7 +36,7 @@ position = Vector2( 32, 20 )
 unique_name_in_owner = true
 position = Vector2( 512, 331 )
 
-[node name="Paddle" parent="." instance=ExtResource( 7 )]
+[node name="Paddle" parent="." groups=["g_paddle"] instance=ExtResource( 7 )]
 unique_name_in_owner = true
 position = Vector2( 512, 450 )
 
@@ -92,6 +93,13 @@ text = "000"
 [node name="GameOverPrompt" parent="." instance=ExtResource( 8 )]
 unique_name_in_owner = true
 visible = false
+
+[node name="ShakeableCamera" type="Camera2D" parent="."]
+unique_name_in_owner = true
+anchor_mode = 0
+current = true
+process_mode = 0
+script = ExtResource( 9 )
 
 [connection signal="ball_is_dead" from="DeadZone" to="." method="_on_DeadZone_ball_is_dead"]
 [connection signal="all_bricks_cleared" from="BrickMapGrid" to="." method="_on_BrickMapGrid_all_bricks_cleared"]

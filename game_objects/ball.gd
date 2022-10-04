@@ -2,6 +2,8 @@ extends KinematicBody2D
 
 class_name Ball
 
+signal ball_collides_with_paddle(collision_position)
+
 
 var _speed: float = 0.0  setget set_speed, get_speed
 var _direction = Vector2(0.0, 0.0) setget set_direction, get_direction
@@ -20,6 +22,8 @@ func _physics_process(delta) -> void:
 	var velocity = _speed * _direction * delta
 	var collision: KinematicCollision2D = move_and_collide(velocity)
 	if collision:
+		if collision.get_collider().is_in_group("g_paddle"):
+			emit_signal("ball_collides_with_paddle", collision.get_position())
 		_bounce_off_surface(collision)
 
 
