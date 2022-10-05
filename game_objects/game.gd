@@ -1,13 +1,16 @@
 extends Node2D
 
+
+const MAX_GRID_CLEARS = 2
+
 var _GameInputHandler = load("res://game_objects/game_input_handler.gd")
 var _game_input_handler: GameInputHandler
 var _ball_instance: Ball
 var _lives = 3
 var _score = 0
-var _cleared_grids = 0
-var _ball_speed_level = 1
-var _ball_speeds = [150, 225, 275, 310, 350]
+var _grids_cleared = 0
+var _ball_speed_level = 0
+var _ball_speeds = [150, 175, 205, 240, 280]
 var _brick_hits = 0
 var _game_over = false
 
@@ -27,6 +30,7 @@ func _ready() -> void:
 	_game_input_handler.set_paddle(_paddle)
 	_game_input_handler.set_ball_spawner(_ball_spawner)
 	_lives_value_lbl.set_text(str(_lives))
+	var _paddle_signal_connection_error = _paddle.connect("ball_collision_detected", _camera, "shake", [3, 0.12])
 
 
 func _physics_process(delta) -> void:
@@ -58,12 +62,36 @@ func get_paddle() -> Paddle:
 	return _paddle
 
 
-func get_lives_value_lbl() -> Label:
-	return _lives_value_lbl
+func get_lives_value_lbl_text() -> String:
+	return _lives_value_lbl.get_text()
 
 
 func get_game_over_prompt() -> GameOverPrompt:
 	return _game_over_prompt
+
+
+func get_brick_map_grid() -> BrickMapGrid:
+	return _brick_map_grid
+
+
+func get_score() -> int:
+	return _score
+
+
+func get_score_value_lbl_text() -> String:
+	return _score_value_lbl.get_text()
+
+
+func get_ball_speed_level() -> int:
+	return _ball_speed_level
+
+
+func get_ball_speeds():
+	return _ball_speeds
+
+
+func get_grids_cleared() -> int:
+	return _grids_cleared
 
 
 # private functions
@@ -91,14 +119,18 @@ func _on_BallSpawner_ball_spawned(ball) -> void:
 	_ball_instance = ball
 	_ball_instance.set_speed(_ball_speeds[_ball_speed_level])
 	add_child(_ball_instance)
-	_ball_instance.connect("ball_collides_with_paddle", _paddle, "emit_particles_at_position")
-	_ball_instance.connect("ball_collides_with_paddle", _camera, "shake", [3, 0.12])
+	var _ball_signal_connection_error = _ball_instance.connect("ball_collides_with_paddle", _paddle, "respond_to_collision_with_ball")
 	_ball_spawner.hide()
 
 
 func _on_BrickMapGrid_player_scored(score) -> void:
-	_camera.shake(0, 5, 0.15)
 	_score += score
+	_update_score_value_lbl_text()
+	_brick_hits += 1
+	_update_ball_speed()
+
+
+func _update_score_value_lbl_text() -> void:
 	var prefix: String 
 	if _score < 10:
 		prefix = "00"
@@ -107,7 +139,9 @@ func _on_BrickMapGrid_player_scored(score) -> void:
 	else: 
 		prefix = ""
 	_score_value_lbl.set_text(prefix + str(_score))
-	_brick_hits += 1
+
+
+func _update_ball_speed() -> void:
 	if _brick_hits == 4:
 		_ball_speed_level += 1
 	elif _brick_hits == 12:
@@ -116,11 +150,12 @@ func _on_BrickMapGrid_player_scored(score) -> void:
 
 
 func _on_BrickMapGrid_all_bricks_cleared() -> void:
-	_cleared_grids += 1
+	_grids_cleared += 1
 	_destroy_ball()
-	if _cleared_grids < 2: 
+	if _grids_cleared < MAX_GRID_CLEARS: 
 		_brick_map_grid.reset_bricks_grid()
 	else:
+		_game_over = true
 		_show_game_over_prompt()
 
 
@@ -139,4 +174,8 @@ func _on_BrickMapGrid_first_red_brick_hit() -> void:
 
 func _on_GameOverPrompt_play_again_clicked() -> void:
 	# TODO replace this with a reset instead
-	get_tree().reload_current_scene()
+	var _error = get_tree().reload_current_scene()
+
+
+func _on_BrickMapGrid_brick_hit() -> void:
+	_camera.shake(5, 0.15)

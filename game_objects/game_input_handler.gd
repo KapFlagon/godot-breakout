@@ -35,4 +35,4 @@ func _input(event) -> void:
 	elif event is InputEventScreenTouch or event is InputEventScreenDrag:
 		_paddle.set_target_x_position(event.position.x)
 	elif event.is_action("launch_ball") and event.is_pressed():
-		_ball_spawner.spawn_ball()
+		var _ball = _ball_spawner.spawn_ball()

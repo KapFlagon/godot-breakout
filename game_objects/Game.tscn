@@ -104,6 +104,7 @@ script = ExtResource( 9 )
 [connection signal="ball_is_dead" from="DeadZone" to="." method="_on_DeadZone_ball_is_dead"]
 [connection signal="all_bricks_cleared" from="BrickMapGrid" to="." method="_on_BrickMapGrid_all_bricks_cleared"]
 [connection signal="all_bricks_reset" from="BrickMapGrid" to="." method="_on_BrickMapGrid_all_bricks_reset"]
+[connection signal="brick_hit" from="BrickMapGrid" to="." method="_on_BrickMapGrid_brick_hit"]
 [connection signal="first_orange_brick_hit" from="BrickMapGrid" to="." method="_on_BrickMapGrid_first_orange_brick_hit"]
 [connection signal="first_red_brick_hit" from="BrickMapGrid" to="." method="_on_BrickMapGrid_first_red_brick_hit"]
 [connection signal="player_scored" from="BrickMapGrid" to="." method="_on_BrickMapGrid_player_scored"]

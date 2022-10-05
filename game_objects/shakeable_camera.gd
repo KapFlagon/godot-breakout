@@ -35,7 +35,7 @@ func _process(delta) -> void:
 
 
 # Public functions 
-func shake(thing, new_intensity: float, new_duration: float) -> void:
+func shake(new_intensity: float, new_duration: float) -> void:
 	if new_intensity > _intensity and new_duration > _duration:
 		_intensity = new_intensity
 		_duration = new_duration

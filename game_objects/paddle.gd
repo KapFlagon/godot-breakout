@@ -2,6 +2,8 @@ extends KinematicBody2D
 
 class_name Paddle
 
+signal ball_collision_detected
+
 
 export var _base_colour: Color = Color(1, 1, 1) setget set_base_colour, get_base_colour
 export var _speed: float = 10.0 setget set_speed, get_speed
@@ -89,9 +91,10 @@ func move_right() -> void:
 		_target_x_position += _movement_increment * _speed 
 
 
-func emit_particles_at_position(position: Vector2) -> void:
+func respond_to_collision_with_ball(position: Vector2) -> void:
 	_particles.set_position(to_local(position))
 	_particles.set_emitting(true)
+	emit_signal("ball_collision_detected")
 
 
 # Private functions

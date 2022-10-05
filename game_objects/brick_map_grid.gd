@@ -6,6 +6,7 @@ class_name BrickMapGrid
 signal all_bricks_cleared
 signal all_bricks_reset
 signal player_scored(score)
+signal brick_hit
 signal first_orange_brick_hit
 signal first_red_brick_hit
 
@@ -63,6 +64,7 @@ func _replace_placeholders_with_bricks() -> void:
 
 func _check_if_grid_is_cleared(score) -> void:
 	emit_signal("player_scored", score)
+	emit_signal("brick_hit")
 	if !_first_orange_brick_hit and score == 5:
 		_first_orange_brick_hit = true
 		emit_signal("first_orange_brick_hit")
