@@ -123,3 +123,6 @@ func test_hold_right_then_move_left_immediately_when_action_changes_direction() 
 	assert_gt(_paddle_instance.position.x, _start_positions.x)
 	assert_lt(_paddle_instance.position.x, 850.0)
 	assert_between(_paddle_instance.position.x, 700.0, 850.0)
+
+
+# TODO May need to add tests for mouse clicks/click-and-drag as well, in case user plays in browser on mobile.

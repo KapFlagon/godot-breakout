@@ -81,6 +81,11 @@ func test_signal_player_scored_with_score_value_when_brick_hit_in_grid() -> void
 	_brick_map_grid_instance.get_brick_array()[0]._disable_brick_after_hit()
 	assert_signal_emitted_with_parameters(_brick_map_grid_instance, "player_scored", [7])
 
+func test_signal_emittied_without_score_when_brick_hit() -> void:
+	watch_signals(_brick_map_grid_instance)
+	_brick_map_grid_instance.get_brick_array()[0]._disable_brick_after_hit()
+	assert_signal_emitted(_brick_map_grid_instance, "brick_hit")
+
 
 func test_signal_emitted_when_first_orange_brick_hit_in_grid() -> void:
 	watch_signals(_brick_map_grid_instance)
