@@ -97,6 +97,14 @@ func test_can_get_max_grid_clears_constant() -> void:
 	assert_eq(_game_instance.MAX_GRID_CLEARS, 2)
 
 
+func test_can_get_brick_hits() -> void:
+	assert_eq(_game_instance.get_brick_hits(), 0)
+
+
+func test_can_get_paddle() -> void:
+	assert_not_null(_game_instance.get_paddle())
+
+
 class TestGameDeadZone:
 	extends GutTest
 	
@@ -200,6 +208,8 @@ class TestGameBrickMapGrid:
 	var _ball_spawner: BallSpawner
 	var _input_sender
 	
+	
+	# Setup and Teardown
 	func before_each() -> void:
 		_game_instance = _Game.instance()
 		_input_sender = InputSender.new(_game_instance)
@@ -219,6 +229,15 @@ class TestGameBrickMapGrid:
 		gut.p("TestGameBrickMapGrid teardown", 2)
 	
 	
+	# Helper functions
+	func get_first_brick_of_type(brick_array, colour: Color) -> Brick:
+		for brick in brick_array:
+			if brick.get_base_colour() == colour:
+				return brick
+		return null
+	
+	
+	# Tests
 	func test_score_signaled_to_game_and_score_variables_is_updated() -> void:
 		assert_signal_emitted(_game_instance.get_brick_map_grid(), "player_scored")
 		assert_eq(_game_instance.get_score(), 1)
@@ -240,6 +259,7 @@ class TestGameBrickMapGrid:
 		for i in 3:
 			_brick_map_grid.emit_signal("player_scored", 1)
 		assert_eq(_game_instance.get_score(), 4)
+		assert_eq(_game_instance.get_brick_hits(), 4)
 		assert_eq(_game_instance.get_ball_speed_level(), 1)
 		assert_eq(_game_instance.get_ball_speeds()[1], _ball_instance.get_speed())
 	
@@ -251,6 +271,7 @@ class TestGameBrickMapGrid:
 		for i in 11:
 			_brick_map_grid.emit_signal("player_scored", 1)
 		assert_eq(_game_instance.get_score(), 12)
+		assert_eq(_game_instance.get_brick_hits(), 12)
 		assert_eq(_game_instance.get_ball_speed_level(), 2)
 		assert_eq(_game_instance.get_ball_speeds()[2], _ball_instance.get_speed())
 	
@@ -289,34 +310,138 @@ class TestGameBrickMapGrid:
 		assert_signal_emitted(_brick_map_grid, "all_bricks_reset")
 	
 	
+	func test_speed_level_resets_after_board_clear() -> void:
+		var _brick_map_grid:BrickMapGrid = _game_instance.get_brick_map_grid()
+		watch_signals(_brick_map_grid)
+		var _bricks_array = _brick_map_grid.get_brick_array()
+		var _ball:Ball = _game_instance.get_ball_instance()
+		for brick_element in _bricks_array:
+			brick_element._disable_brick_after_hit()
+		assert_eq(_game_instance.get_ball_speed_level(), 0)
+	
+	
+	func test_bricks_hit_count_resets_after_board_clear() -> void:
+		var _brick_map_grid:BrickMapGrid = _game_instance.get_brick_map_grid()
+		watch_signals(_brick_map_grid)
+		var _bricks_array = _brick_map_grid.get_brick_array()
+		var _ball:Ball = _game_instance.get_ball_instance()
+		for brick_element in _bricks_array:
+			brick_element._disable_brick_after_hit()
+		assert_eq(_game_instance.get_brick_hits(), 0)
+	
+	
+	func test_ball_spawner_shows_after_board_clear_if_less_than_max_clears() -> void:
+		var _brick_map_grid:BrickMapGrid = _game_instance.get_brick_map_grid()
+		watch_signals(_brick_map_grid)
+		var _bricks_array = _brick_map_grid.get_brick_array()
+		var _ball:Ball = _game_instance.get_ball_instance()
+		for brick_element in _bricks_array:
+			brick_element._disable_brick_after_hit()
+		assert_eq(_game_instance.get_ball_spawner().is_visible(), true)
+	
+	
 	func test_brick_map_grid_does_not_trigger_grid_reset_on_grid_clear_if_max_boards_cleared_is_reached() -> void:
+		var _brick_map_grid:BrickMapGrid = _game_instance.get_brick_map_grid()
+		watch_signals(_brick_map_grid)
+		var _bricks_array = _brick_map_grid.get_brick_array()
+		var _ball:Ball = _game_instance.get_ball_instance()
+		while _game_instance.get_grids_cleared() < _game_instance.MAX_GRID_CLEARS:
+				for brick_element in _bricks_array:
+					brick_element._disable_brick_after_hit()
+		assert_eq(_game_instance.get_grids_cleared(), _game_instance.MAX_GRID_CLEARS)
+		assert_eq(_game_instance.is_game_over(), true)
+		assert_eq(_game_instance.get_game_over_prompt().is_visible(), true)
+	
+	
+	func test_hitting_first_orange_brick_increments_ball_speed_by_one_level() -> void:
+		var _brick_map_grid:BrickMapGrid = _game_instance.get_brick_map_grid()
+		watch_signals(_brick_map_grid)
+		var _bricks_array = _brick_map_grid.get_brick_array()
+		var orange_brick:Brick = get_first_brick_of_type(_bricks_array, Color.orange)
+		orange_brick.emit_signal("brick_was_hit", orange_brick.get_score_value())
+		assert_signal_emitted(_brick_map_grid, "first_orange_brick_hit")
+		assert_eq(_game_instance.get_ball_speed_level(), 1)
+	
+	
+	func test_hitting_first_red_brick_increments_ball_speed_by_one_level() -> void:
+		var _brick_map_grid:BrickMapGrid = _game_instance.get_brick_map_grid()
+		watch_signals(_brick_map_grid)
+		var _bricks_array = _brick_map_grid.get_brick_array()
+		var red_brick:Brick = get_first_brick_of_type(_bricks_array, Color.red)
+		red_brick.emit_signal("brick_was_hit", red_brick.get_score_value())
+		assert_signal_emitted(_brick_map_grid, "first_red_brick_hit")
+		assert_eq(_game_instance.get_ball_speed_level(), 1)
+	
+	
+	func test_hitting_first_red_brick_shrinks_ball_size_by_half() -> void:
+		# TODO need to design this test and implement code
+		pending() 
+
+
+class TestGameBallSpawner:
+	extends GutTest
+	
+	var _Game = load("res://game_objects/Game.tscn")
+	var _game_instance
+	var _ball_spawner: BallSpawner
+	var _input_sender
+	
+	
+	# Setup and Teardown
+	func before_each() -> void:
+		_game_instance = _Game.instance()
+		_input_sender = InputSender.new(_game_instance)
+		add_child(_game_instance)
+		watch_signals(_game_instance.get_brick_map_grid())
+		yield(yield_for(0.1), YIELD)
+		_ball_spawner = _game_instance.get_ball_spawner()
+		gut.p("TestGameBrickMapGrid setup", 2)
+	
+	
+	func after_each() -> void:
+		remove_child(_game_instance)
+		_input_sender.clear()
+		_game_instance.free()
+		gut.p("TestGameBrickMapGrid teardown", 2)
+	
+	
+	# Helper functions
+	
+	
+	# Tests
+	func test_ball_is_spawned_at_start_of_game_with_initial_speed() -> void:
+		var _ball:Ball = _ball_spawner.spawn_ball()
+		assert_eq(_ball.get_speed(), _game_instance.get_ball_speeds()[0])
+	
+	
+	func test_ball_spawned_after_4_hits_spawns_with_speed_level_value() -> void:
+		var _ball:Ball = _ball_spawner.spawn_ball()
+		var _brick_map_grid: BrickMapGrid = _game_instance.get_brick_map_grid()
+		for i in 4:
+			_brick_map_grid.emit_signal("player_scored", 1)
+		_ball.free()
+		_ball = _ball_spawner.spawn_ball()
+		assert_eq(_ball.get_speed(), _game_instance.get_ball_speeds()[1])
+	
+	
+	func test_ball_spawner_is_hidden_when_ball_is_created() -> void:
+		var _ball:Ball = _ball_spawner.spawn_ball()
+		assert_not_null(_ball)
+		assert_eq(_ball_spawner.is_visible(), false)
+	
+	
+	func test_ball_spawner_signals_are_connected_from_ball_to_paddle_for_screen_shake() -> void:
+		var _ball:Ball = _ball_spawner.spawn_ball()
+		assert_connected(_ball, _game_instance.get_paddle(), "ball_collides_with_paddle")
+	
+	
+	func test_ball_spawner_signals_are_connected_from_ball_to_paddle_for_particle_emission() -> void:
+		var _ball:Ball = _ball_spawner.spawn_ball()
+#		assert_connected(_ball, _game_instance.get_paddle(), "ball_collides_with_paddle")
+		# TODO should there be a separate signal to trigger particle emission?
 		pending()
-#		var _brick_map_grid:BrickMapGrid = _game_instance.get_brick_map_grid()
-#		watch_signals(_brick_map_grid)
-#		var _bricks_array = _brick_map_grid.get_brick_array()
-#		var _ball:Ball = _game_instance.get_ball_instance()
-#		while _game_instance.get_grids_cleared() < _game_instance.MAX_GRID_CLEARS:
-#			for brick_element in _bricks_array:
-#				brick_element._disable_brick_after_hit()
-#			yield(yield_for(0.2), YIELD)
-#		assert_eq(_game_instance.get_grids_cleared(), _game_instance.MAX_GRID_CLEARS)
-#		assert_eq(_game_instance.is_game_over(), true)
-#		assert_eq(_game_instance.get_game_over_prompt().is_visible(), true)
-		
-		
-	# TODO Test BrickMapGrid resets all bricks on clear if cleared grids is less than max
-	# TODO Test BrickMapGrid triggers game over if cleared grids is greater than 1
-	# TODO Test BrickMapGrid signal for successful reset changes brick hits to zero
-	# TODO Test BrickMapGrid signal for successful reset shows the ball spawner
-	# TODO Test BrickMapGrid signal for hitting first orange brick increments ball speed a level
-	# TODO Test BrickMapGrid signal for hitting first red brick increments ball speed a level
-	# TODO Test BrickMapGrid signal for hitting first red brick shrinks ball size.
-	
-	
-# TODO TestGameBallSpawner test that ball is added with specific speed
-# TODO TestGameBallSpawner test that spawner is hidden when ball is created
-# TODO TestGameBallSpawner test that signals are connected between ball and paddle for screen shake
-# TODO TestGameBallSpawner test that signals are connected between ball and paddle for particle emision
+
+
 # TODO TestCameraShake test for camera screen shake on ball and paddle hit.
 # TODO TestCameraShake test for camera screen shake on ball and brick hit.
 # TODO TestCameraShake test for camera screen shake on ball and deadzone collision. 

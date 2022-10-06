@@ -3,6 +3,7 @@ extends Node2D
 
 const MAX_GRID_CLEARS = 2
 
+
 var _GameInputHandler = load("res://game_objects/game_input_handler.gd")
 var _game_input_handler: GameInputHandler
 var _ball_instance: Ball
@@ -15,7 +16,7 @@ var _brick_hits = 0
 var _game_over = false
 
 
-onready var _paddle: Paddle = $"%Paddle" setget , get_paddle
+onready var _paddle: Paddle = $"%Paddle" 
 onready var _ball_spawner: BallSpawner = $"%BallSpawner"
 onready var _brick_map_grid: BrickMapGrid = $"%BrickMapGrid"
 onready var _score_value_lbl: Label = $"%ScoreValLbl"
@@ -58,10 +59,6 @@ func is_game_over() -> bool:
 	return _game_over
 
 
-func get_paddle() -> Paddle:
-	return _paddle
-
-
 func get_lives_value_lbl_text() -> String:
 	return _lives_value_lbl.get_text()
 
@@ -92,6 +89,14 @@ func get_ball_speeds():
 
 func get_grids_cleared() -> int:
 	return _grids_cleared
+
+
+func get_brick_hits() -> int:
+	return _brick_hits
+
+
+func get_paddle() -> Paddle:
+	return _paddle
 
 
 # private functions
@@ -127,7 +132,7 @@ func _on_BrickMapGrid_player_scored(score) -> void:
 	_score += score
 	_update_score_value_lbl_text()
 	_brick_hits += 1
-	_update_ball_speed()
+	_update_ball_speed_level()
 
 
 func _update_score_value_lbl_text() -> void:
@@ -141,18 +146,21 @@ func _update_score_value_lbl_text() -> void:
 	_score_value_lbl.set_text(prefix + str(_score))
 
 
-func _update_ball_speed() -> void:
+func _update_ball_speed_level() -> void:
+	var _original_speed_level = _ball_speed_level
 	if _brick_hits == 4:
 		_ball_speed_level += 1
 	elif _brick_hits == 12:
 		_ball_speed_level += 1
-	_ball_instance.set_speed(_ball_speeds[_ball_speed_level])
+	if _ball_speed_level != _original_speed_level:
+		_ball_instance.set_speed(_ball_speeds[_ball_speed_level])
 
 
 func _on_BrickMapGrid_all_bricks_cleared() -> void:
 	_grids_cleared += 1
 	_destroy_ball()
 	if _grids_cleared < MAX_GRID_CLEARS: 
+		_ball_speed_level = 0
 		_brick_map_grid.reset_bricks_grid()
 	else:
 		_game_over = true
