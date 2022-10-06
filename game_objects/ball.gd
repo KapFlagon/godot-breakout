@@ -9,7 +9,7 @@ var _speed: float = 0.0  setget set_speed, get_speed
 var _direction = Vector2(0.0, 0.0) setget set_direction, get_direction
 var _base_colour = Color(1, 1, 1) setget set_base_colour, get_base_colour
 
-onready var _collision_shape = $"%CollisionShape2D".shape
+onready var _collision_shape:CircleShape2D = $"%CollisionShape2D".shape
 
 
 
@@ -25,7 +25,6 @@ func _physics_process(delta) -> void:
 		if collision.get_collider().is_in_group("g_paddle"):
 			emit_signal("ball_collides_with_paddle", collision.get_position())
 		_bounce_off_surface(collision)
-
 
 
 # Getters and Setters
@@ -52,6 +51,8 @@ func set_base_colour(new_base_colour: Color) -> void:
 	_base_colour = new_base_colour
 
 
+func get_collision_shape_radius() -> float:
+	return _collision_shape.get_radius()
 
 # Private functions
 func _bounce_off_surface(collision: KinematicCollision2D) -> void:
@@ -64,3 +65,7 @@ func _calculate_influenced_x_value(collider_velocity: Vector2) -> float:
 	var temp_direction = _direction + collider_velocity
 	return temp_direction.normalized().x
 
+
+func halve_size_of_ball() -> void:
+	_collision_shape.set_radius(5)
+	update()

@@ -14,6 +14,7 @@ var _ball_speed_level = 0
 var _ball_speeds = [150, 175, 205, 240, 280]
 var _brick_hits = 0
 var _game_over = false
+var _ball_size_halved = false
 
 
 onready var _paddle: Paddle = $"%Paddle" 
@@ -99,6 +100,10 @@ func get_paddle() -> Paddle:
 	return _paddle
 
 
+func is_ball_size_halved() -> bool:
+	return _ball_size_halved
+
+
 # private functions
 func _on_DeadZone_ball_is_dead() -> void:
 	_destroy_ball()
@@ -123,6 +128,8 @@ func _show_game_over_prompt() -> void:
 func _on_BallSpawner_ball_spawned(ball) -> void:
 	_ball_instance = ball
 	_ball_instance.set_speed(_ball_speeds[_ball_speed_level])
+	if is_ball_size_halved():
+		_ball_instance.halve_size_of_ball()
 	add_child(_ball_instance)
 	var _ball_signal_connection_error = _ball_instance.connect("ball_collides_with_paddle", _paddle, "respond_to_collision_with_ball")
 	_ball_spawner.hide()
@@ -132,7 +139,7 @@ func _on_BrickMapGrid_player_scored(score) -> void:
 	_score += score
 	_update_score_value_lbl_text()
 	_brick_hits += 1
-	_update_ball_speed_level()
+	_update_ball_data()
 
 
 func _update_score_value_lbl_text() -> void:
@@ -146,12 +153,13 @@ func _update_score_value_lbl_text() -> void:
 	_score_value_lbl.set_text(prefix + str(_score))
 
 
-func _update_ball_speed_level() -> void:
+func _update_ball_data() -> void:
 	var _original_speed_level = _ball_speed_level
 	if _brick_hits == 4:
 		_ball_speed_level += 1
 	elif _brick_hits == 12:
 		_ball_speed_level += 1
+		
 	if _ball_speed_level != _original_speed_level:
 		_ball_instance.set_speed(_ball_speeds[_ball_speed_level])
 
@@ -178,6 +186,8 @@ func _on_BrickMapGrid_first_orange_brick_hit() -> void:
 
 func _on_BrickMapGrid_first_red_brick_hit() -> void:
 	_ball_speed_level += 1
+	_ball_size_halved = true
+	_ball_instance.halve_size_of_ball()
 
 
 func _on_GameOverPrompt_play_again_clicked() -> void:

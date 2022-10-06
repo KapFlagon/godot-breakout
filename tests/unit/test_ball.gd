@@ -40,6 +40,11 @@ func test_get_set_direction() -> void:
 	assert_accessors(_ball_instance, "direction", Vector2(0.0, 0.0), Vector2(1.0, 1.0).normalized())
 
 
+func test_can_get_collision_shape_radius() -> void:
+	add_child(_ball_instance)
+	assert_eq(_ball_instance.get_collision_shape_radius(), 10)
+
+
 func _setup_ball_physics_scenario(direction: Vector2):
 	_ball_instance.set_speed(10)
 	_ball_instance.set_direction(direction)
@@ -66,3 +71,9 @@ func test_set_direction_normalizes_vector() -> void:
 
 func test_get_set_base_colour() -> void:
 	assert_accessors(_ball_instance, "base_colour", Color(1, 1, 1), Color(0.5, 0.5, 0.5))
+
+
+func test_ball_scale_can_be_halved() -> void:
+	add_child(_ball_instance)
+	_ball_instance.halve_size_of_ball()
+	assert_eq(_ball_instance.get_collision_shape_radius(), 5)

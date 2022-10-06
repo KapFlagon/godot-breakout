@@ -105,6 +105,10 @@ func test_can_get_paddle() -> void:
 	assert_not_null(_game_instance.get_paddle())
 
 
+func test_is_ball_size_halved() -> void:
+	assert_eq(_game_instance.is_ball_size_halved(), false)
+
+
 class TestGameDeadZone:
 	extends GutTest
 	
@@ -374,8 +378,13 @@ class TestGameBrickMapGrid:
 	
 	
 	func test_hitting_first_red_brick_shrinks_ball_size_by_half() -> void:
-		# TODO need to design this test and implement code
-		pending() 
+		var _brick_map_grid:BrickMapGrid = _game_instance.get_brick_map_grid()
+		watch_signals(_brick_map_grid)
+		var _bricks_array = _brick_map_grid.get_brick_array()
+		var red_brick:Brick = get_first_brick_of_type(_bricks_array, Color.red)
+		red_brick.emit_signal("brick_was_hit", red_brick.get_score_value())
+		assert_eq(_game_instance.is_ball_size_halved(), true)
+		assert_eq(_game_instance.get_ball_instance().get_collision_shape_radius(), 5)
 
 
 class TestGameBallSpawner:
@@ -440,6 +449,8 @@ class TestGameBallSpawner:
 #		assert_connected(_ball, _game_instance.get_paddle(), "ball_collides_with_paddle")
 		# TODO should there be a separate signal to trigger particle emission?
 		pending()
+	
+	
 
 
 # TODO TestCameraShake test for camera screen shake on ball and paddle hit.
