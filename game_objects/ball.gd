@@ -10,10 +10,15 @@ var _direction = Vector2(0.0, 0.0) setget set_direction, get_direction
 var _base_colour = Color(1, 1, 1) setget set_base_colour, get_base_colour
 
 onready var _collision_shape:CircleShape2D = $"%CollisionShape2D".shape
-
+onready var _audio_player: AudioStreamPlayer2D = $"%AudioStreamPlayer2D"
+onready var _ball_trail: BallTrail = $"%BallTrail"
 
 
 # Virtual functions
+func _ready() -> void:
+	_ball_trail.set_trail_owner(self)
+
+
 func _draw() -> void:
 	draw_circle(Vector2(0, 0), _collision_shape.radius, _base_colour)
 
@@ -25,6 +30,7 @@ func _physics_process(delta) -> void:
 		if collision.get_collider().is_in_group("g_paddle"):
 			emit_signal("ball_collides_with_paddle", collision.get_position())
 		_bounce_off_surface(collision)
+		_audio_player.play()
 
 
 # Getters and Setters

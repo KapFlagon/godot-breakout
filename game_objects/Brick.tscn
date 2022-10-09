@@ -1,6 +1,7 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://game_objects/brick.gd" type="Script" id=1]
+[ext_resource path="res://assets/audio/sfx/Smash.mp3" type="AudioStream" id=2]
 
 [sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 33.5, 12 )
@@ -19,6 +20,8 @@ _data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 0.806763, 0 ), 0.0, 0.0, 0, 
 colors = PoolColorArray( 1, 1, 1, 1, 0, 0, 0, 1 )
 
 [sub_resource type="AudioStreamRandomPitch" id=6]
+audio_stream = ExtResource( 2 )
+random_pitch = 1.6
 
 [node name="Brick" type="Node2D"]
 script = ExtResource( 1 )
@@ -61,6 +64,8 @@ scale_amount_curve = SubResource( 4 )
 color_ramp = SubResource( 5 )
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+unique_name_in_owner = true
 stream = SubResource( 6 )
+bus = "SFX"
 
 [connection signal="body_exited" from="Area2D" to="." method="_on_Area2D_body_exited"]

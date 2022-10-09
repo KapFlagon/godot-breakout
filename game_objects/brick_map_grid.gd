@@ -18,7 +18,6 @@ var _first_orange_brick_hit = false
 var _first_red_brick_hit = false
 
 
-
 # Virtual function
 func _ready() -> void:
 	_brick_generator_instance = _BrickGenerator.new()
@@ -55,10 +54,11 @@ func _replace_placeholders_with_bricks() -> void:
 	for cell_position in used_cells :
 		var _brick_instance: Brick = _generate_brick_based_on_row(cell_position.y)
 		var offset_position = map_to_world(cell_position) * scale + Vector2(size_x_offset, size_y_offset)
-		add_child(_brick_instance)
-		_brick_instance.set_starting_position(offset_position)
 		var _error_code = _brick_instance.connect("brick_was_hit", self, "_check_if_grid_is_cleared")
+		_brick_instance.set_starting_position(offset_position)
 		_brick_array.append(_brick_instance)
+		add_child(_brick_instance)
+		_brick_instance.tween_in()
 		set_cellv(cell_position, -1)
 
 

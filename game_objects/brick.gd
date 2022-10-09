@@ -12,6 +12,7 @@ var _rectangle: Rect2
 
 onready var _detector_shape_extents = $"%DetectorShape".shape.extents
 onready var _collision_particles: CPUParticles2D = $"%CollisionParticles"
+onready var _audio_player: AudioStreamPlayer2D = $"%AudioStreamPlayer2D"
 
 
 
@@ -67,6 +68,7 @@ func _disable_brick_after_hit() -> void:
 	_collision_particles.set_emitting(true)
 	_base_colour = _build_opaque_colour()
 	update()
+	_audio_player.play()
 	emit_signal("brick_was_hit", _score_value)
 
 
@@ -91,6 +93,16 @@ func reset_brick() -> void:
 	$"%StaticBodyCollisionShape".set_deferred("disabled", false)
 	_base_colour = _build_solid_colour()
 	update()
+
+
+func tween_in() -> void:
+	var randomiser: RandomNumberGenerator = RandomNumberGenerator.new()
+	randomiser.randomize()
+	var rand_x = randomiser.randf_range(-550, 550)
+	position.x =rand_x
+#	position = Vector2(rand_x, -50)
+	var tween = get_tree().create_tween()
+	tween.tween_property(self, "position", _starting_position, 2).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
 
 
 # Connected signals
