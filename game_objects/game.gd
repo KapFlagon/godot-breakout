@@ -127,10 +127,10 @@ func _show_game_over_prompt() -> void:
 
 func _on_BallSpawner_ball_spawned(ball) -> void:
 	_ball_instance = ball
+	add_child(_ball_instance)
 	_ball_instance.set_speed(_ball_speeds[_ball_speed_level])
 	if is_ball_size_halved():
 		_ball_instance.halve_size_of_ball()
-	add_child(_ball_instance)
 	var _ball_signal_connection_error = _ball_instance.connect("ball_collides_with_paddle", _paddle, "respond_to_collision_with_ball")
 	_ball_spawner.hide()
 
@@ -197,3 +197,10 @@ func _on_GameOverPrompt_play_again_clicked() -> void:
 
 func _on_BrickMapGrid_brick_hit() -> void:
 	_camera.shake(5, 0.15)
+
+
+# TODO Add music
+# BUG make ball trails continue after ball has moved into dead zone.
+# BUG make sure ball is cleared BEFORE second board is generated
+# TODO Add sound effects for speed level upgrade
+# TODO Add sound effects for dead zone ball entered 

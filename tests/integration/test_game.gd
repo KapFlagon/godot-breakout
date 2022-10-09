@@ -200,7 +200,7 @@ class TestGameOver:
 		assert_eq(_game_instance.is_game_over(), true)
 		assert_eq(_game_instance.get_game_over_prompt().is_visible(), true)
 	
-	# TODO Test clicking Game Over prompt button resets game completely and starts again.
+	# TODO Test clicking Game Over "play again"prompt button resets game completely and starts again.
 	# TODO Test Game Over state writes high score to memory if it is a valid high score. 
 
 
@@ -447,7 +447,7 @@ class TestGameBallSpawner:
 	func test_ball_spawner_signals_are_connected_from_ball_to_paddle_for_particle_emission() -> void:
 		var _ball:Ball = _ball_spawner.spawn_ball()
 #		assert_connected(_ball, _game_instance.get_paddle(), "ball_collides_with_paddle")
-		# TODO should there be a separate signal to trigger particle emission?
+		# DESIGN should there be a separate signal to trigger particle emission?
 		pending()
 	
 	
