@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://game_objects/ball_trail.gd" type="Script" id=1]
+
+[sub_resource type="Curve" id=3]
+_data = [ Vector2( 0, 0 ), 0.0, 0.0, 0, 0, Vector2( 1, 0.963636 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="Gradient" id=4]
+colors = PoolColorArray( 0, 0, 0, 0, 1, 1, 1, 1 )
+
+[node name="BallTrail" type="Line2D"]
+width = 8.0
+width_curve = SubResource( 3 )
+default_color = Color( 1, 1, 1, 1 )
+gradient = SubResource( 4 )
+joint_mode = 1
+end_cap_mode = 2
+antialiased = true
+script = ExtResource( 1 )
