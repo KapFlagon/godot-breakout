@@ -17,3 +17,6 @@ data_*/
 # GUT specific files
 .gut_editor_config.json
 .gut_editor_shortcuts.cfg
+
+# other
+/AudioCreation
